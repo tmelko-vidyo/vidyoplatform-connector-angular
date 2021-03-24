@@ -1,10 +1,26 @@
 <div class="container">
   <div class="box-wrapper chat-main-container">
-
     <div class="chat">
       <header>
         <div class="header-text"><span>Name</span>{{ userName }}</div>
         <div class="header-text"><span>Status</span>{{ connectionStatus }}</div>
+
+        <div>
+          <span style="margin-right: 16px">Select Local Window Share:</span>
+          <select
+            class="share-dropdown"
+            (change)="onShareSelected($event.target)"
+            formControlName="shareName"
+          >
+            <option value="None" [selected]="!isSharingWindow">None</option>
+            <option
+              *ngFor="let share of localWindowShares"
+              [value]="share.getObject()"
+            >
+              {{ share.getName() }}
+            </option>
+          </select>
+        </div>
       </header>
 
       <div class="video-chat-box" id="video-call-start" style="display: none">

@@ -1,9 +1,11 @@
 var vidyoConnector;
 
-var onVidyoClientLoadedInjected;
+var onVidyoClientLoadedCallback;
+
+var onShareCallback;
 
 function RegisterLoadEventCallback(callback) {
-  this.onVidyoClientLoadedInjected = callback;
+  this.onVidyoClientLoadedCallback = callback;
 }
 
 function VidyoClientLoaded(status) {
@@ -25,8 +27,8 @@ function VidyoClientLoaded(status) {
             vidyoConnector = vc;
 
             /* Notify Angular layer about successful load event */
-            if (onVidyoClientLoadedInjected != null) {
-              onVidyoClientLoadedInjected(true);
+            if (this.onVidyoClientLoadedCallback != null) {
+              this.onVidyoClientLoadedCallback(true);
             } else {
               console.log("Callback is not available.");
             }
@@ -42,15 +44,15 @@ function VidyoClientLoaded(status) {
       break;
     case "FAILED": // The library operating has stopped
       console.log("FAILED");
-      onVidyoClientLoadedInjected(false);
+      this.onVidyoClientLoadedCallback(false);
       break;
     case "FAILEDVERSION":
       console.log("FAILEDVERSION");
-      onVidyoClientLoadedInjected(false);
+      this.onVidyoClientLoadedCallback(false);
       break;
     case "NOTAVAILABLE": // The library is not available
       console.log("NOTAVAILABLE");
-      onVidyoClientLoadedInjected(false);
+      this.onVidyoClientLoadedCallback(false);
       break;
   }
   return true; // Return true to reload the plugins if not available
@@ -75,4 +77,58 @@ function RefreshView() {
       ", " +
       rndr.offsetHeight
   );
+}
+
+function SelectLocalWindowShare(share) {
+  vidyoConnector
+    .SelectLocalWindowShare({
+      localWindowShare: share,
+    })
+    .then(function (isSelected) {
+      if (!isSelected) {
+        console.log("Share has not been selected");
+        this.onShareCallback(null, "stopped");
+      } else {
+        console.log("SelectLocalWindowShare Success");
+      }
+    })
+    .catch(function (error) {
+      // This API will be rejected in case any error occurred including:
+      // - permission is not given on the OS level (macOS).
+      console.error("SelectLocalWindowShare Failed:", error);
+    });
+}
+
+function RegisterShareListener(callback) {
+  this.onShareCallback = callback;
+
+  vidyoConnector
+    .RegisterLocalWindowShareEventListener({
+      onAdded: function (localWindowShare) {
+        // New share is available so add it to the windowShares array and the drop-down list
+        if (localWindowShare.name != "") {
+          this.onShareCallback(localWindowShare, "add");
+        }
+      },
+      onRemoved: function (localWindowShare) {
+        this.onShareCallback(localWindowShare, "remove");
+      },
+      onSelected: function (localWindowShare) {
+        // Share was selected/unselected by you or automatically
+        if (localWindowShare) {
+          console.log("Window share selected: " + localWindowShare.name);
+          this.onShareCallback(localWindowShare, "started");
+        } else {
+          console.log("Local window share was likely unselected or stopped.");
+          this.onShareCallback(null, "stopped");
+        }
+      },
+      onStateUpdated: function (localWindowShare, state) {},
+    })
+    .then(function () {
+      console.log("RegisterLocalWindowShareEventListener Success");
+    })
+    .catch(function () {
+      console.error("RegisterLocalWindowShareEventListener Failed");
+    });
 }

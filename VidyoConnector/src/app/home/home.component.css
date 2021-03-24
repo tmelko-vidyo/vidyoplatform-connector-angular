@@ -110,3 +110,7 @@
 .video-chat-controls a.connect {
   background-position: -131px 0;
 }
+
+.share-dropdown {
+  width: 200px;
+}

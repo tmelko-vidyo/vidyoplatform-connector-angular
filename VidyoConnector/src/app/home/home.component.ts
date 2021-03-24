@@ -1,7 +1,12 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Output } from '@angular/core';
+import { LocalWindowShare } from '../model/local-window-share';
 import { ScriptService } from '../service/script-service.service';
 
 declare var RegisterLoadEventCallback: any;
+
+declare var RegisterShareListener: any;
+declare var SelectLocalWindowShare: any;
+
 declare var VidyoClientLoaded: any;
 declare var vidyoConnector: any;
 
@@ -11,8 +16,8 @@ declare var vidyoConnector: any;
   styleUrls: ['./home.component.css'],
 })
 export class HomeComponent implements OnInit {
-  public PORTAL = 'Portal.vidyo.com';
-  public ROOM_KEY = 'xxxxxx'; // default room id
+  public PORTAL = '';
+  public ROOM_KEY = ''; // default room id
   public DISPLAY_NAME = 'Angular User'; // default username
   public ROOM_PIN = ''; // default room pin
 
@@ -28,6 +33,12 @@ export class HomeComponent implements OnInit {
   public userName = this.DISPLAY_NAME;
 
   public connectionStatus = 'Awaiting connection';
+
+  @Output()
+  public localWindowShares = Array<LocalWindowShare>();
+
+  @Output()
+  public isSharingWindow: boolean = false;
 
   constructor(private readonly scriptService: ScriptService) {}
 
@@ -61,6 +72,8 @@ export class HomeComponent implements OnInit {
     this.registerMicrophoneEventListener();
     this.registerLocalSpeakerEventListener();
 
+    RegisterShareListener(this.OnVidyoClientShareCallback);
+
     vidyoConnector
       .GetVersion()
       .then(function (version: string) {
@@ -70,6 +83,49 @@ export class HomeComponent implements OnInit {
         console.error('GetVersion failed');
       });
   };
+
+  /* Custom Share Callback from JS Share Event Listener */
+  private OnVidyoClientShareCallback: Function = (
+    localWindowShare: any,
+    action: any
+  ) => {
+    console.log('Share callback with action: $' + action);
+
+    switch (action) {
+      case 'add':
+        var localShare = new LocalWindowShare(localWindowShare);
+        this.localWindowShares.push(localShare);
+        console.log('Add: Shares size: ' + this.localWindowShares.length);
+        break;
+      case 'remove':
+        var index = this.localWindowShares.findIndex(
+          (el) => el.getObject() === localWindowShare
+        );
+
+        if (index !== -1) {
+          this.localWindowShares.splice(index, 1);
+        }
+
+        console.log('Remove: Shares size: ' + this.localWindowShares.length);
+        this.isSharingWindow = false;
+        break;
+      case 'started':
+        this.isSharingWindow = true;
+        console.log('Share has started. Name: ' + localWindowShare.name);
+        break;
+      case 'stopped':
+        this.isSharingWindow = false;
+        console.log('Share was stopped. Drop to none selection.');
+        break;
+    }
+  };
+
+  public onShareSelected(target: any) {
+    const value = target.value;
+    console.log(value);
+
+    SelectLocalWindowShare(value == 'None' ? null : value);
+  }
 
   /**
    * It will connect to the video call using VidyoConnector#Connect api.
