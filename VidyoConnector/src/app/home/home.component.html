@@ -9,7 +9,7 @@
           <span style="margin-right: 16px">Select Local Window Share:</span>
           <select
             class="share-dropdown"
-            (change)="onShareSelected($event.target)"
+            (change)="onShareSelected($event)"
             formControlName="shareName"
           >
             <option value="None" [selected]="!isSharingWindow">None</option>

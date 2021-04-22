@@ -16,8 +16,8 @@ declare var vidyoConnector: any;
   styleUrls: ['./home.component.css'],
 })
 export class HomeComponent implements OnInit {
-  public PORTAL = '';
-  public ROOM_KEY = ''; // default room id
+  public PORTAL = '*';
+  public ROOM_KEY = '*'; // default room id
   public DISPLAY_NAME = 'Angular User'; // default username
   public ROOM_PIN = ''; // default room pin
 
@@ -120,9 +120,9 @@ export class HomeComponent implements OnInit {
     }
   };
 
-  public onShareSelected(target: any) {
-    const value = target.value;
-    console.log(value);
+  public onShareSelected(event: any) {
+    const value = event.target.value;
+    console.log("To select: " + value.name);
 
     SelectLocalWindowShare(value == 'None' ? null : value);
   }
@@ -307,5 +307,16 @@ export class HomeComponent implements OnInit {
       .catch(function () {
         console.error('RegisterLocalSpeakerEventListener Failed');
       });
+  }
+
+  private isSafari() {
+    var ua = navigator.userAgent.toLowerCase();
+    if (ua.indexOf('safari') != -1) {
+      if (ua.indexOf('chrome') > -1) {
+        return false;
+      }
+      return true;
+    }
+    return false;
   }
 }

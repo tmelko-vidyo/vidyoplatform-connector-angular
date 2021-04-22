@@ -31,6 +31,7 @@
   position: absolute;
   width: 50px;
   height: 50px;
+  z-index: 10;
 }
 .vidyo-rendering-container .flip-back-video {
   transform: translate(-50%, -50%) scaleX(1) !important;
@@ -91,6 +92,9 @@
 .vidyo-rendering-container .media-grid .video-muted video {
   width: 100%;
   z-index: -1;
+}
+.vidyo-rendering-container .media-grid .video-restricted video {
+  filter: blur(25px);
 }
 .vidyo-rendering-container .media-grid .stats-overlay {
   position: absolute;
@@ -331,6 +335,9 @@
 .vidyo-rendering-container-custom .video-container .video-muted video {
   width: 100%;
   z-index: -1;
+}
+.vidyo-rendering-container-custom .video-container.video-restricted video {
+  filter: blur(25px);
 }
 .vidyo-rendering-container-custom .video-container .stats-overlay {
   position: absolute;

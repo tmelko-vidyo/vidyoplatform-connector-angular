@@ -6,13 +6,9 @@ interface Scripts {
 
 export const ScriptStore: Scripts[] = [
   {
-    // src: 'https://static.vidyo.io/latest/javascript/VidyoClient/VidyoClient.js?onload=VidyoClientLoaded&webrtc=true&plugin=false',
-
     name: 'VidyoClient',
-    // src: 'https://web-static.alpha.vidyo.com/VidyoConnector/20.1.8/latest_build/VidyoClient.js',
-    // css: 'https://web-static.alpha.vidyo.com/VidyoConnector/20.1.8/latest_build/VidyoClient.css'
 
-    /* Load locally 20.1.8 */
+    /* Load locally 21.x */
     src: '/assets/latest_build/VidyoClient.js',
     css: '/assets/latest_build/VidyoClient.css',
   },

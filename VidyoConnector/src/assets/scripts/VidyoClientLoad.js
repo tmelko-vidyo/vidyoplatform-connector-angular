@@ -17,7 +17,7 @@ function VidyoClientLoaded(status) {
         VC.CreateVidyoConnector({
           viewId: "connected-video-chat",
           viewStyle: "VIDYO_CONNECTORVIEWSTYLE_Default",
-          remoteParticipants: 10,
+          remoteParticipants: 8,
           logFileFilter: "warning error all@VidyoConnector info@VidyoClient",
           logFileName: "VidyoClientLog.log",
           userData: "",
