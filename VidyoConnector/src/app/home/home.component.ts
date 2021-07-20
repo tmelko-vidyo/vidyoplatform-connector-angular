@@ -122,9 +122,7 @@ export class HomeComponent implements OnInit {
 
   public onShareSelected(event: any) {
     const value = event.target.value;
-    console.log("To select: " + value.name);
-
-    SelectLocalWindowShare(value == 'None' ? null : value);
+    SelectLocalWindowShare(value === 'None' ? null : event);
   }
 
   /**
