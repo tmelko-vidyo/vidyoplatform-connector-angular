@@ -1,1 +1,1 @@
-ng serve --host static.platform.vidyo.io --port 443 --ssl
+ng serve --host static.platform.vidyo.io --port 4443 --ssl

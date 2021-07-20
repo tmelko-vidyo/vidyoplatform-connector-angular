@@ -8,7 +8,7 @@ export const ScriptStore: Scripts[] = [
   {
     name: 'VidyoClient',
 
-    /* Load locally 21.x */
+    /* Load locally 21.3 */
     src: '/assets/latest_build/VidyoClient.js',
     css: '/assets/latest_build/VidyoClient.css',
   },
